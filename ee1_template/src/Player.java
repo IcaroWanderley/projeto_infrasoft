@@ -57,7 +57,7 @@ public class Player {
                         try {
                             System.out.println("opa");
                             Song n_music = window.getNewSong();
-
+                            addToQueue(n_music);
                         } catch (Exception ex) {
 
                         }
@@ -204,14 +204,19 @@ public class Player {
     public void addToQueue(Song song) {
         musica.add(song);
         fila = getQueueAsArray();
+        window.updateQueueList(fila);
     }
 
     public void removeFromQueue(String filePath) {
     }
 
     public String[][] getQueueAsArray() {
-        String[][] novafila = new String[musica.size()][]
-        return fila;
+        String[][] novafila = new String[musica.size()][6];
+        for(int i = 0; i < musica.size(); i++){
+            novafila[i] = musica.get(i).getDisplayInfo();
+
+        }
+        return novafila;
     }
 
     //</editor-fold>

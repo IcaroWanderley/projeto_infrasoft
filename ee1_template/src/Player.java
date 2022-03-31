@@ -39,13 +39,41 @@ public class Player {
         ActionListener buttonListenerPlayNow = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Thread t_playnow = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String playnow = window.getSelectedSong();
+                        for(int i = 0;i < musica.size();i++){
+                            if (musica.get(i).getFilePath() == playnow){
+                                Song play = musica.get(i);
+                                window.updatePlayingSongInfo(play.getTitle(),play.getAlbum(),play.getArtist());
+                            }
+                        }
 
+                    }
+                });
+                t_playnow.start();
             }
         };
         ActionListener buttonListenerRemove = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Thread t_RemovedSong = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String removedSong = window.getSelectedSong();
+                        for(int i = 0;i < musica.size();i++){
+                            if (musica.get(i).getFilePath() == removedSong){
+                                musica.remove(i);
+                            }
+                        }
+                        fila = getQueueAsArray();
+                        window.updateQueueList(fila);
 
+                    }
+
+                });
+                t_RemovedSong.start();
             }
         };
         ActionListener buttonListenerAddSong = new ActionListener() {
@@ -55,13 +83,10 @@ public class Player {
                     @Override
                     public void run() {
                         try {
-                            System.out.println("opa");
                             Song n_music = window.getNewSong();
                             addToQueue(n_music);
                         } catch (Exception ex) {
-
                         }
-
                     }
                 });
                 t_AddSong.start();
@@ -82,6 +107,15 @@ public class Player {
         ActionListener buttonListenerPlayPause = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Thread t_PlayPause = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        window.updatePlayPauseButtonIcon(playerPaused);
+
+                    }
+                });t_PlayPause.start();
+
 
             }
         };

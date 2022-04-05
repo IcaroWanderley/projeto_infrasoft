@@ -42,13 +42,19 @@ public class Player {
                 Thread t_playnow = new Thread(new Runnable() {
                     @Override
                     public void run() {
+
                         String playnow = window.getSelectedSong();
                         for(int i = 0;i < musica.size();i++){
                             if (musica.get(i).getFilePath() == playnow){
                                 Song play = musica.get(i);
                                 window.updatePlayingSongInfo(play.getTitle(),play.getAlbum(),play.getArtist());
+
                             }
                         }
+                        window.setEnabledScrubberArea(playerPaused);
+
+
+
 
                     }
                 });
@@ -111,7 +117,12 @@ public class Player {
                     @Override
                     public void run() {
 
-                        window.updatePlayPauseButtonIcon(playerPaused);
+                        try{
+                            playerPaused = !playerPaused;
+                            window.updatePlayPauseButtonIcon(playerPaused);
+                        }catch  (Exception ex) {
+                        }
+
 
                     }
                 });t_PlayPause.start();

@@ -1,8 +1,5 @@
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jl.decoder.*;
 import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
 import support.PlayerWindow;
 import support.Song;
 
@@ -31,9 +28,12 @@ public class Player {
     private boolean shuffle = false;
     private boolean playerEnabled = false;
     private boolean playerPaused = true;
-    private Song currentSong;
+    private Song currentSong = null;
+    private Song Nextsong = null;
+    private Song previoussong = null;
     private int currentFrame = 0;
     private int newFrame;
+    private int j = 0;
     String[][] fila = {};
     public Player() {
         ActionListener buttonListenerPlayNow = new ActionListener() {
@@ -44,9 +44,12 @@ public class Player {
                     public void run() {
 
                         String playnow = window.getSelectedSong();
-                        for(int i = 0;i < musica.size();i++){
+                        for(int i = 0; i < musica.size();i++){
+                            j++;
                             if (musica.get(i).getFilePath() == playnow){
                                 Song play = musica.get(i);
+                                currentSong = play;
+                                Nextsong = musica.get(i);
                                 window.updatePlayingSongInfo(play.getTitle(),play.getAlbum(),play.getArtist());
 
                             }
@@ -107,6 +110,7 @@ public class Player {
         ActionListener buttonListenerPrevious = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
 
             }
         };

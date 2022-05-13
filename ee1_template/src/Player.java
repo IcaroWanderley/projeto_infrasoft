@@ -31,9 +31,11 @@ public class Player {
     private boolean shuffle = false;
     private boolean playerEnabled = false;
     private boolean playerPaused = true;
-    private Song currentSong;
+    private Song currentSong = null;
     private int currentFrame = 0;
     private int newFrame;
+    private int current_i = 0;
+
     String[][] fila = {};
     public Player() {
         ActionListener buttonListenerPlayNow = new ActionListener() {
@@ -44,14 +46,17 @@ public class Player {
                     public void run() {
 
                         String playnow = window.getSelectedSong();
+                        System.out.println(playnow);
                         for(int i = 0;i < musica.size();i++){
                             if (musica.get(i).getFilePath() == playnow){
-                                Song play = musica.get(i);
-                                window.updatePlayingSongInfo(play.getTitle(),play.getAlbum(),play.getArtist());
+                               update(i);
 
                             }
                         }
-                        window.setEnabledScrubberArea(playerPaused);
+                        playerPaused = false;
+                        window.updatePlayPauseButtonIcon(playerPaused);
+                        playerEnabled = true;
+                        window.setEnabledScrubberArea(playerEnabled);
 
 
 
@@ -107,6 +112,21 @@ public class Player {
         ActionListener buttonListenerPrevious = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Thread t_buttonPrevious = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try{
+                            if(current_i > 0){
+                                current_i--;
+                                update(current_i);
+                            }
+                        }catch  (Exception ex) {
+                        }
+
+
+                    }
+                });t_buttonPrevious.start();
 
             }
         };
@@ -139,6 +159,22 @@ public class Player {
         ActionListener buttonListenerNext = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Thread t_buttonNext = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try{
+                            if(current_i < musica.size()-1){
+                                current_i++;
+                                update(current_i);
+                            }
+                        }catch  (Exception ex) {
+                        }
+
+
+                    }
+                });t_buttonNext.start();
+
 
             }
         };
@@ -284,8 +320,27 @@ public class Player {
 
     public void previous() {
     }
-    //</editor-fold>
+    public void update(int i) {
+        Song play = musica.get(i);
+        currentSong = play;
+        current_i = i;
+        window.updatePlayingSongInfo(play.getTitle(),play.getAlbum(),play.getArtist());
+        if (i == 0){
+            window.setEnabledPreviousButton(false);
 
+        }
+        else{
+            window.setEnabledPreviousButton(true);
+        }
+        if (i == musica.size()-1){
+            window.setEnabledNextButton(false);
+
+        }
+        else{
+            window.setEnabledNextButton(true);
+        }
+        }
+        //</editor-fold>
     //<editor-fold desc="Getters and Setters">
 
     //</editor-fold>

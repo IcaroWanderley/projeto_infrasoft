@@ -1,4 +1,5 @@
 import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jl.decoder.*;
 import javazoom.jl.player.AudioDevice;
@@ -7,6 +8,10 @@ import support.PlayerWindow;
 import support.Song;
 
 import java.awt.event.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Player {
@@ -57,7 +62,16 @@ public class Player {
                         window.updatePlayPauseButtonIcon(playerPaused);
                         playerEnabled = true;
                         window.setEnabledScrubberArea(playerEnabled);
-
+                        try {
+                            File file = new File(currentSong.getFilePath());
+                            int maxFrames = new Mp3File(file).getFrameCount();
+                            device = FactoryRegistry.systemRegistry().createAudioDevice();
+                            device.open(decoder = new Decoder());
+                            bitstream = new Bitstream(new BufferedInputStream(new FileInputStream(file)));
+                        } catch (JavaLayerException | InvalidDataException | UnsupportedTagException | IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        var playerThread = new Thread(new DemoTask());
 
 
 
@@ -106,6 +120,22 @@ public class Player {
         ActionListener buttonListenerShuffle = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Thread t_buttonShuffle = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try{
+                            String teste = "";
+                            if(current_i != -1){
+
+                            }
+
+                        }catch  (Exception ex) {
+                        }
+
+
+                    }
+                });t_buttonShuffle.start();
 
             }
         };
@@ -181,6 +211,21 @@ public class Player {
         ActionListener buttonListenerRepeat = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Thread t_buttonRepeat = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try{
+                            repeat = !repeat;
+                            window.setEnabledRepeatButton(!repeat);
+
+                    }catch  (Exception ex) {
+                    }
+
+
+                }
+            });t_buttonRepeat.start();
+
 
             }
         };
@@ -298,6 +343,21 @@ public class Player {
 
         }
         return novafila;
+    }
+    class DemoTask implements Runnable {
+        @Override
+        public void run() {
+            if (device != null) {
+                try {
+
+                    do {
+
+                    } while (!playNextFrame());
+                } catch (JavaLayerException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     //</editor-fold>
